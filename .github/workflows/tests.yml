@@ -1,0 +1,99 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  PYTHONUTF8: '1'
+
+jobs:
+  compatibility:
+    name: ${{ matrix.os }} / Python ${{ matrix.python }} / ${{ matrix.profile }} / ${{ matrix.ground }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ['3.11', '3.12', '3.13', '3.14']
+        profile: [core, real]
+        ground: [flint]
+        dependencies: [latest]
+        include:
+          - {os: ubuntu-latest, python: '3.11', profile: core, ground: flint, dependencies: minimum}
+          - {os: ubuntu-latest, python: '3.11', profile: real, ground: flint, dependencies: minimum}
+          - {os: ubuntu-latest, python: '3.11', profile: real, ground: python, dependencies: latest}
+          - {os: ubuntu-latest, python: '3.14', profile: real, ground: python, dependencies: latest}
+          - {os: macos-latest, python: '3.14', profile: real, ground: python, dependencies: latest}
+          - {os: windows-latest, python: '3.14', profile: real, ground: python, dependencies: latest}
+    env:
+      MPLBACKEND: Agg
+      PYTHONDONTWRITEBYTECODE: '1'
+      SYMPY_GROUND_TYPES: ${{ matrix.ground }}
+      CERTIFICATE_AUDIT_REPORT: certificate-audit.jsonl
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Select arithmetic floor
+        if: matrix.dependencies == 'minimum'
+        shell: bash
+        run: echo "PIP_CONSTRAINT=$GITHUB_WORKSPACE/ci/minimum.txt" >> "$GITHUB_ENV"
+      - name: Install matching backends
+        run: python tools/install_backends.py --published --profile ${{ matrix.profile }}
+      - name: Install package and test dependencies
+        run: python -m pip install ".[test]"
+      - name: Check dependency profile
+        run: python tools/check_backends.py --profile ${{ matrix.profile }} --ground-types ${{ matrix.ground }}
+      - name: Test core installation
+        if: matrix.profile == 'core'
+        run: python -m pytest --without-real -p no:cacheprovider --junitxml=results.xml
+      - name: Test real installation
+        if: matrix.profile == 'real'
+        run: python -m pytest -p no:cacheprovider --junitxml=results.xml
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: tests-${{ matrix.os }}-${{ matrix.python }}-${{ matrix.profile }}-${{ matrix.ground }}-${{ matrix.dependencies }}
+          path: |
+            results.xml
+            certificate-audit.jsonl
+
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: python tools/install_backends.py --published --profile real
+      - run: python -m pip install ".[test,real,docs]" "twine>=6"
+      - run: ruff check --no-cache .
+      - run: ruff format --no-cache --check .
+      - run: python tools/generate_api.py --check
+      - run: python tools/plot_applications.py
+      - run: python benchmarks/run.py --suite smoke --repeat 1 --real --output benchmark.json
+      - run: python -m build
+      - run: python -m twine check dist/*
+      - run: python -m pip install --force-reinstall --no-deps --no-index --find-links dist alggeom
+      - run: python tools/check_installation.py --profile real
+      - run: python tools/generate_api.py --check
+      - name: Rebuild and verify the source distribution
+        run: |
+          python -m pip wheel --no-deps dist/*.tar.gz --wheel-dir rebuilt
+          python -m pip install --force-reinstall --no-deps --no-index --find-links rebuilt alggeom
+          python tools/check_installation.py --profile real
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: distributions-and-benchmark
+          path: |
+            dist/*
+            benchmark.json

@@ -1,0 +1,73 @@
+{
+  "alggeom.noether.NoetherNormalization": {
+    "coordinate_map": {
+      "role": "proof"
+    },
+    "inverse_map": {
+      "role": "proof"
+    },
+    "base_embedding": {
+      "role": "proof"
+    },
+    "integral_relations": {
+      "role": "proof"
+    },
+    "module_generators": {
+      "role": "proof"
+    }
+  },
+  "alggeom.normalization.NormalizationStep": {
+    "source": {
+      "role": "proof"
+    },
+    "target": {
+      "role": "proof"
+    },
+    "test_ideal": {
+      "role": "proof"
+    },
+    "denominator": {
+      "role": "proof"
+    },
+    "numerators": {
+      "role": "proof"
+    }
+  },
+  "alggeom.normalization.IntegralClosure": {
+    "mapping": {
+      "role": "proof"
+    },
+    "steps": {
+      "role": "proof"
+    },
+    "inverse_functions": {
+      "role": "proof"
+    },
+    "module_generators": {
+      "role": "proof"
+    },
+    "components": {
+      "role": "proof"
+    }
+  },
+  "alggeom.resolutions.GradedResolution": {
+    "module": {
+      "role": "proof"
+    },
+    "generator_degrees": {
+      "role": "proof"
+    },
+    "differentials": {
+      "role": "proof"
+    },
+    "shifts": {
+      "role": "proof"
+    },
+    "augmentation": {
+      "role": "proof"
+    },
+    "complete": {
+      "role": "proof"
+    }
+  }
+}

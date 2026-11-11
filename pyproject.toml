@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alggeom"
+version = "0.1.0"
+description = "Exact computational algebraic geometry for Python."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "GPL-3.0-only"
+license-files = ["LICENSE"]
+authors = [{name = "Bhuvanesh Bhatt", email = "bhuvaneshbhatt@gmail.com"}]
+dependencies = ["sympy>=1.14,<2", "python-flint>=0.9,<1", "algroots>=0.4.0"]
+
+[project.optional-dependencies]
+real = ["semialg>=1.5.0"]
+docs = ["matplotlib>=3.8,<4"]
+test = ["pytest>=8", "hypothesis>=6", "ruff>=0.12", "build>=1.2"]
+
+[project.urls]
+Repository = "https://github.com/BhuvaneshBhatt/alggeom"
+Documentation = "https://github.com/BhuvaneshBhatt/alggeom/tree/main/docs"
+Issues = "https://github.com/BhuvaneshBhatt/alggeom/issues"
+
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["real: requires the optional semialg backend", "slow: computationally expensive tests", "oracle: requires an external computer algebra system"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = [".ci-backends", "dist", "*.md", "*.ipynb"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["alggeom*"]

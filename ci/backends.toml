@@ -1,0 +1,5 @@
+[algroots]
+requirement = "algroots>=0.4.0"
+
+[semialg]
+requirement = "semialg>=1.5.0"

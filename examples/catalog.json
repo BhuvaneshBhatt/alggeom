@@ -1,0 +1,140 @@
+[
+  {
+    "file": "affine_normalization.py",
+    "title": "affine normalization",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "algebraic_relations.py",
+    "title": "algebraic relations",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "coefficient_fields.py",
+    "title": "coefficient fields",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "curve_geometry.py",
+    "title": "curve geometry",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "curve_normalization.py",
+    "title": "curve normalization",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "curve_reparametrization.py",
+    "title": "curve reparametrization",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "cusp_branch.py",
+    "title": "cusp branch",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "finite_points.py",
+    "title": "finite points",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "graded_resolution.py",
+    "title": "graded resolution",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "linkage_workspace.py",
+    "title": "linkage workspace",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "local_geometry.py",
+    "title": "local geometry",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "module_arithmetic.py",
+    "title": "module arithmetic",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "module_rank.py",
+    "title": "module rank",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "number_fields.py",
+    "title": "number fields",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "parameter_families.py",
+    "title": "parameter families",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "primary_components.py",
+    "title": "primary components",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "quadratic_fibers.py",
+    "title": "quadratic fibers",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "quadratic_towers.py",
+    "title": "quadratic stages",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "rational_maps.py",
+    "title": "rational maps",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "real_branches.py",
+    "title": "real branches",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "response_contours.py",
+    "title": "response contours",
+    "guarantee": "Exact assertions in the script",
+    "profile": "real"
+  },
+  {
+    "file": "scheme_fibers.py",
+    "title": "scheme fibers",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  },
+  {
+    "file": "solve_equation.py",
+    "title": "solve equation",
+    "guarantee": "Exact assertions in the script",
+    "profile": "core"
+  }
+]

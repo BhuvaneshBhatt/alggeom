@@ -1,0 +1,12 @@
+include README.md REFERENCES.md LICENSE pyproject.toml MANIFEST.in
+recursive-include src *.py
+recursive-include docs *.md *.toml *.svg
+recursive-include tests *.py *.json
+recursive-include examples *.py *.md *.json
+recursive-include tools *.py
+recursive-include benchmarks *.py *.json
+recursive-include ci *.toml *.txt *.patch *.tar.gz
+recursive-include .github *.yml
+recursive-exclude * __pycache__ *.py[cod] .pytest_cache .ruff_cache
+
+include RELEASE_NOTES.md

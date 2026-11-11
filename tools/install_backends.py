@@ -1,0 +1,38 @@
+"""Install declared backend dependencies or their matching local source trees."""
+
+import argparse
+import subprocess
+import sys
+import tomllib
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def main():
+    """Install the declared core or real dependency profile."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--profile", choices=("core", "real"), default="real")
+    sources = parser.add_mutually_exclusive_group()
+    sources.add_argument("--source-root", type=Path, default=ROOT.parent)
+    sources.add_argument(
+        "--published",
+        action="store_true",
+        help="install declared requirements without local source overrides",
+    )
+    args = parser.parse_args()
+    specifications = tomllib.loads((ROOT / "ci/backends.toml").read_text(encoding="utf-8"))
+    names = [name for name in specifications if name != "semialg" or args.profile == "real"]
+    targets = []
+    for name in names:
+        source = args.source_root / name
+        targets.append(
+            str(source.resolve())
+            if not args.published and (source / "pyproject.toml").is_file()
+            else specifications[name]["requirement"]
+        )
+    subprocess.run([sys.executable, "-m", "pip", "install", *targets], check=True)
+
+
+if __name__ == "__main__":
+    main()

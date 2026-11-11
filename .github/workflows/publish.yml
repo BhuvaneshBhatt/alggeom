@@ -1,0 +1,88 @@
+name: Publish release
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Upload the validated artifacts to PyPI
+        type: boolean
+        default: false
+permissions:
+  contents: read
+env:
+  PYTHONUTF8: '1'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      MPLBACKEND: Agg
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Require the tag matching package metadata for publication
+        env:
+          PUBLISH: ${{ inputs.publish }}
+        run: |
+          python - <<'PY'
+          import os, tomllib
+          from pathlib import Path
+          metadata = tomllib.loads(Path('pyproject.toml').read_text(encoding='utf-8'))['project']
+          version = metadata.get('version', '0.1.0')
+          publishing = os.environ['GITHUB_EVENT_NAME'] == 'release' or os.environ['PUBLISH'] == 'true'
+          if publishing and os.environ['GITHUB_REF'] != 'refs/tags/v' + version:
+              raise RuntimeError('Publish from the tag matching project.version')
+          PY
+      - name: Install release and integration dependencies
+        run: python -m pip install build twine ruff '.[test,real,docs]'
+      - name: Lint and format
+        run: |
+          ruff check --no-cache .
+          ruff format --check --no-cache .
+      - name: Build release artifacts
+        run: python -m build
+      - name: Check metadata and install the candidate wheel
+        run: |
+          python -m twine check --strict dist/*
+          python -m pip install --force-reinstall --no-deps dist/*.whl
+          python -m pip check
+      - name: Verify the candidate and integrations
+        run: |
+          python tools/check_installation.py --profile real
+          python -m pytest -q -o pythonpath=
+      - uses: actions/upload-artifact@v6
+        with:
+          name: release-distributions
+          path: dist/*
+          if-no-files-found: error
+  publish:
+    if: github.event_name == 'release' || inputs.publish
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: release-distributions
+          path: dist
+      - uses: pypa/gh-action-pypi-publish@release/v1
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify the indexed version
+        run: |
+          python -m venv verify-index
+          verify-index/bin/python -m pip install alggeom==0.1.0
+          verify-index/bin/python -m pip check
+          verify-index/bin/python -c "import importlib.metadata as m; assert m.version('alggeom') == '0.1.0'"
+          verify-index/bin/python - <<'PY'
+          import sympy as sp
+          from alggeom.ideals import PolynomialRing
+          x = sp.Symbol('x')
+          assert PolynomialRing((x,), sp.QQ).ideal(x*x-1).normal_form(x**4-1) == 0
+          PY
