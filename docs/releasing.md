@@ -6,7 +6,7 @@ Use this guide after the mathematical tests and user documentation agree with th
 
 For alggeom 0.1.0, the core dependency floor is algroots 0.4.0; the optional real profile requires semialg 1.5.0. Release those backend versions before testing an index-only installation of the corresponding profile. Source checkout tests are useful during development, but do not establish that users can resolve the published requirements.
 
-Check that [package metadata](../pyproject.toml), [backend inputs](../ci/backends.toml), the [README](../README.md) and [release notes](../RELEASE_NOTES.md) describe the same capabilities and requirements. The metadata declares `GPL-3.0-only` and includes the root [LICENSE](../LICENSE).
+Check that [package metadata](../pyproject.toml), [backend inputs](../ci/backends.toml), the [README](../README.md) describe the same capabilities and requirements. The metadata declares `GPL-3.0-only` and includes the root [LICENSE](../LICENSE).
 
 ## Test the dependency profiles
 

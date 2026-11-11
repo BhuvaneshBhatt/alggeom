@@ -1,4 +1,4 @@
-"""Execute the advertised examples and marked tutorials against installed packages."""
+"""Execute the advertized examples and marked tutorials against installed packages."""
 
 from __future__ import annotations
 

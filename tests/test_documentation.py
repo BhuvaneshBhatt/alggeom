@@ -35,7 +35,7 @@ def test_examples(example, run_example):
 @pytest.mark.parametrize(
     "document",
     [
-        pytest.param(p, marks=pytest.mark.real) if str(p.relative_to(ROOT)) in REAL_DOCUMENTS else p
+        pytest.param(p, marks=pytest.mark.real) if p.relative_to(ROOT).as_posix() in REAL_DOCUMENTS else p
         for p in DOCUMENTS
         if "```python" in p.read_text(encoding="utf-8")
     ],

@@ -1,6 +1,10 @@
 # alggeom
 
-Exact computational algebraic geometry for Python. Use it to turn parametrizations into equations, retain multiplicity in fibers, analyze singularities, compute finite projections and normalize affine models. Modules and graded resolutions describe relations; function decomposition exposes hidden intermediate quantities.
+`alggeom` is a Python package for exact computational algebraic geometry over supported coefficient fields. Its main interfaces cover polynomial ideals and coordinate rings, affine and projective schemes, components, local invariants, normalization, finite projections, modules and graded resolutions. You could use it to turn parametrizations into equations, retain multiplicity in fibers, analyze singularities, compute finite projections and normalize affine models.
+
+Parameter calculations include constructible images, supported fiber strata, specialization-aware Gröbner bases and replayable certificates. Function decomposition exposes rational and algebraic intermediate functions. The optional real profile verifies domains and selected branches through the `semialg` package.
+
+Gröbner construction uses the verified native `algroots` backend by default. Explicit SymPy selection supports portable ideal and quotient construction.
 
 <!-- examples: executable -->
 
@@ -18,7 +22,7 @@ For real inequalities, selected branches and semialgebraic graph verification, i
 python -m pip install "alggeom[real]"
 ```
 
-The core package requires algroots 0.4.0 or newer, SymPy 1.14 within the 1.x series, and python-flint 0.9 within the 0.x series. The real extra additionally requires semialg 1.5.0 or newer. Core algebraic geometry works without semialg.
+The core package requires algroots 0.4.0 or newer, SymPy 1.14, and python-flint 0.9. The `real` (real geometry) extra additionally requires semialg 1.5.0 or newer. Core algebraic geometry works without semialg.
 
 The default Gröbner backend requires a native algroots installation. Compatible algroots wheels include the compiled kernels and their numerical libraries. If pip installs a portable algroots distribution, select the SymPy backend explicitly for ideal and quotient construction as shown below. See [backend installation and selection](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/backends.md) for source builds and dependency profiles.
 
@@ -41,7 +45,7 @@ assert closure.mapping.is_injective and closure.verify()
 assert closure.conductor == S.ideal(x, y)
 ```
 
-The cusp has one-dimensional local geometry and a two-dimensional tangent space at the origin. Its normalization adds the integral function y/x. This is different from Noether normalization, which finds a polynomial subring over which the existing ring is finite.
+The cusp has one-dimensional local geometry and a two-dimensional tangent space at the origin. Its normalization adds the integral function y/x. This is different from Noetherian normalization, which finds a polynomial subring over which the existing ring is finite.
 
 ## Package boundaries
 
@@ -52,23 +56,23 @@ The cusp has one-dimensional local geometry and a two-dimensional tangent space 
 | Task | Result | Scope |
 | --- | --- | --- |
 | Ideals and coordinate rings | Exact normal forms, ideal operations, elements and homomorphisms | Supported exact fields; Krull dimension is distinct from finite vector-space dimension |
-| Schemes and maps | Affine/projective points, fibers, constructible sets, and exact existential images | Exact locally closed images of arbitrary affine polynomial and rational maps over QQ, with an explicit branch budget |
+| Schemes and maps | Affine/projective points, fibers, constructible sets, and exact existential images | Exact locally closed images of arbitrary affine polynomial and rational maps over QQ (the rationals ℚ), with an explicit branch budget |
 | Components and local geometry | Radicals, primary factors, absolute primary factors of hypersurfaces, selected finite algebras, separated complete intersections, and polynomial-graph prime ideals, tangent cones and local intersection multiplicity | Field-relative primary decomposition and certified QQ hypersurface absolute splitting; isolated proper local intersections |
 | Modules and resolutions | Kernel/image/cokernel, tensor, Hom, Fitting ideals and Betti tables | Finite presentations; standard-graded polynomial resolutions |
 | Noether normalization | Certified finite projection and monic integral relations | Spanning module generators need not be a free basis |
-| Normalization | Affine finite birational maps, projective normalization patches and domain conductors | Reduced characteristic-zero affine algebras; regular projective-chart transitions and cocycle verification; no single global projective embedding |
+| Normalization | Affine finite birational maps, projective normalization patches and domain conductors | Reduced characteristic-zero affine algebras; regular projective-chart transitions and co-cycle verification; no single global projective embedding |
 | Finite-field points | Complete field-valued enumeration | Candidate budgets bound the ambient enumeration |
-| Parameter families and morphisms | Univariate, hypersurface, affine-linear, and coupled nonlinear parameter strata; generic degree of affine maps | Exact constructible dimension and bounded geometric-point strata over QQ; specialization-aware Gröbner bases on supported parameter branches, including recursively split algebraic exceptional graphs; generic degrees for characteristic-zero affine-space targets; finiteness and relative-differential branch loci for finite affine morphisms |
+| Parameter families and morphisms | Univariate, hypersurface, affine-linear, and coupled nonlinear parameter strata; generic degree of affine maps | Exact constructible dimension and bounded geometric-point strata over QQ (the rationals ℚ); specialization-aware Gröbner bases on supported parameter branches, including recursively split algebraic exceptional graphs; generic degrees for characteristic-zero affine-space targets; finiteness and relative-differential branch loci for finite affine morphisms |
 | Function decomposition | Rational components, implicit reconstructions and chains | Declared characteristic-zero constants and documented completeness boundaries |
-| Real verification | Domains, poles, selectors and graph conditions | Optional semialg extra; algebraic equality alone does not preserve real branches |
+| Real verification | Domains, poles, selectors and graph conditions | Optional `semialg` extra; algebraic equality alone does not preserve real branches |
 
-Choose the declared coefficient field before computing: a result over the rationals ℚ, written `QQ` in the API, need not remain valid after specialization or a change of field. Resource exhaustion raises or returns the incomplete search record documented by the interface. A bounded rational-point search cannot prove that a variety has no rational points.
+Choose the declared coefficient field before computing: a result over the rationals ℚ, written `QQ` in the API, need not remain valid after specialization or a change of field. A bounded rational-point search cannot prove that a variety has no rational points. Resource exhaustion raises or returns the incomplete search record documented by the interface.
 
 The [capability matrix and mathematical scope](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/capabilities.md), [coefficient-field matrix](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/coefficient_fields_support.md) and [input limitations](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/known_issues.md) describe supported inputs, completeness boundaries and explicit refusals.
 
 ## Gröbner bases and exact verification
 
-Ideals and coordinate rings delegate Gröbner-basis construction to algroots, using `groebner_backend="native"` by default. The native prime-field F4 kernel is `f4_tiled_finish`; prime-field calculations preserve the characteristic, and rational calculations use rational reconstruction. Accelerated bases pass independent exact verification before use in normal forms. Public timing includes that verification.
+Ideals and coordinate rings delegate Gröbner-basis construction to the `algroots` package, using `groebner_backend="native"` by default. Prime-field calculations preserve the characteristic, and rational calculations use rational reconstruction. Accelerated bases pass independent exact verification before use in normal forms. Public timing includes that verification.
 
 Use `ring.ideal(..., groebner_backend="sympy")` or `ring.quotient(..., groebner_backend="sympy")` for portable construction. Higher-level workflows such as function decomposition can also invoke native algroots operations and require the compiled kernels.
 
@@ -84,7 +88,7 @@ ideal = ring.ideal(x**2 - y, y**2 - 1, groebner_backend="sympy")
 assert ideal.normal_form(x**4 - 1) == 0
 ```
 
-Use `ideal.groebner_basis_from("native", limits=...)` for an explicitly requested calculation, or pass `groebner_limits` to the ideal or quotient factory. Availability errors, verification failures and exhausted budgets are reported to the caller. See [quotients and Gröbner backends](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/quotient_localization_and_groebner_backend.md) and the [algroots Gröbner guide](https://github.com/BhuvaneshBhatt/algroots/blob/main/docs/groebner-bases.md) for field support and limit semantics.
+Use `ideal.groebner_basis_from("native", limits=...)` for an explicitly requested calculation, or pass `groebner_limits` to the ideal or quotient factory. Availability errors, verification failures, exhausted budgets, etc are reported to the caller. See [quotients and Gröbner backends](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/quotient_localization_and_groebner_backend.md) and the [algroots Gröbner guide](https://github.com/BhuvaneshBhatt/algroots/blob/main/docs/groebner-bases.md) for field support and limit semantics.
 
 ## Applications
 
@@ -97,7 +101,7 @@ Use `ideal.groebner_basis_from("native", limits=...)` for an explicitly requeste
 | Compare finite projection with integral closure | [Affine normalization](https://github.com/BhuvaneshBhatt/alggeom/blob/main/examples/affine_normalization.py) |
 | Compute kernels, Hom and tensor of torsion modules | [Module arithmetic](https://github.com/BhuvaneshBhatt/alggeom/blob/main/examples/module_arithmetic.py) |
 
-The [application tutorials](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/worked_applications.md) state the expected answers and assumptions. The [example catalog](https://github.com/BhuvaneshBhatt/alggeom/blob/main/examples/README.md) covers the complete set of runnable scripts.
+The [application tutorials](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/worked_applications.md) state the expected answers and assumptions. The [example catalog](https://github.com/BhuvaneshBhatt/alggeom/blob/main/examples/README.md) has the complete set of runnable scripts.
 
 ## Documentation
 
@@ -131,4 +135,4 @@ The [testing guide](https://github.com/BhuvaneshBhatt/alggeom/blob/main/docs/tes
 
 ## License
 
-alggeom is licensed under the GNU General Public License, version 3 only (`GPL-3.0-only`). See [LICENSE](https://github.com/BhuvaneshBhatt/alggeom/blob/main/LICENSE).
+`alggeom` is licensed under the GNU General Public License, version 3 only (`GPL-3.0-only`). See [LICENSE](https://github.com/BhuvaneshBhatt/alggeom/blob/main/LICENSE).
