@@ -576,7 +576,7 @@ decompose(expression, variables, *, constants=QQ, **limits)
 
 Return an outer-to-inner tuple of SymPy Lambdas for one resolved chain.
 
-`variables` is a Symbol or an ordered sequence of input coordinates. Only the last map may have several arguments. Constant and indecomposable inputs give a one-element tuple. Search limits are those of `rational_chain`. An unfinished chain raises `IncompleteDecompositionError` with its certificate in `error.result`.
+`variables` is a Symbol or an ordered sequence of input coordinates. Only the last map may have several arguments. Constant and indecomposible inputs give a one-element tuple. Search limits are those of `rational_chain`. An unfinished chain raises `IncompleteDecompositionError` with its certificate in `error.result`.
 
 [Source](https://github.com/BhuvaneshBhatt/alggeom/blob/main/src/alggeom/decomposition/_api.py#L21)
 
@@ -1500,7 +1500,7 @@ A certified finite field extension of QQ(parameters) or K(parameters).
 
 Construct from an irreducible univariate `Poly` over QQ or a rational function field over QQ/a number field. `extend` accepts a modulus over this field, checks irreducibility through a squarefree norm, and compresses the result. Generator names remain valid coefficient expressions. A symbol denotes a formal algebraic root; real or complex embeddings are chosen explicitly when specializing.
 
-[Source](https://github.com/BhuvaneshBhatt/algroots/blob/main/src/algroots/algebraic_function_fields.py#L83)
+[Source](https://github.com/BhuvaneshBhatt/algroots/blob/main/src/algroots/algebraic_function_fields.py#L103)
 
 ### `finite_field`
 
